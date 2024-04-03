@@ -4,13 +4,27 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.cine.en.casa.cineencasa.ui.screens.MoviesPopular
+import com.cine.en.casa.cineencasa.ui.viewmodel.ListState
 import com.cine.en.casa.cineencasa.ui.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,16 +39,86 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    MainScreen()
                 }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun MainScreen(mainViewModel: MainViewModel = hiltViewModel()) {
+    val uiState by mainViewModel.uiState.observeAsState()
+    val moviesPopular by mainViewModel.movies.observeAsState()
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+
+    Scaffold(snackbarHost = {
+        SnackbarHost(hostState = snackbarHostState)
+    }) { contentPadding ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            when (uiState) {
+                ListState.ERROR-> {
+                    Box {
+                        /*LoginUser(
+                                    modifier = Modifier
+                                        .padding(16.dp),
+                                    onClickAction = { userName ->
+                                        mainViewModel.createUser(userName)
+                                    }*/
+                    }
+                    LaunchedEffect(snackbarHostState) {
+                        // Show snackbar using a coroutine, when the coroutine is cancelled the
+                        // snackbar will automatically dismiss. This coroutine will cancel whenever
+                        // `state.hasError` is false, and only start when `state.hasError` is true
+                        // (due to the above if-check), or if `scaffoldState.snackbarHostState` changes.
+                        snackbarHostState.showSnackbar(
+                            message = "ERROR",
+                            actionLabel = "Retry message"
+                        )
+                    }
+                }
+
+                ListState.LOADING-> {
+                    LaunchedEffect(snackbarHostState) {
+                        // Show snackbar using a coroutine, when the coroutine is cancelled the
+                        // snackbar will automatically dismiss. This coroutine will cancel whenever
+                        // `state.hasError` is false, and only start when `state.hasError` is true
+                        // (due to the above if-check), or if `scaffoldState.snackbarHostState` changes.
+                        snackbarHostState.showSnackbar(
+                            message = "Loading",
+                        )
+                    }
+                }
+
+                ListState.SUCCESS -> {
+                    moviesPopular?.let {
+                        MoviesPopular(movieList = it
+                        ) }
+                }
+
+                null -> TODO()
+            }
+        }
+    }
+}
+
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting(name: String) {
     Text(
-        text = "PROXIMAMENTE CINE EN CASA!",
-        modifier = modifier
+        text = "PROXIMAMENTE CIN EN CASA!",
+        modifier = Modifier.fillMaxSize()
     )
+}
+
+@Preview
+@Composable
+fun Preview(){
+    Greeting("Hola")
 }

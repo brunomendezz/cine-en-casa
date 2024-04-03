@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class MoviesServices @Inject constructor(var movieRepo:MovieRestRespository) {
 
-    suspend fun getAllMovies(page: Int):List<MovieModel>{
+    suspend fun getAllMovies(page: Int = 1):List<MovieModel>{
         return movieRepo.getAllMovies(page)
     }
 
