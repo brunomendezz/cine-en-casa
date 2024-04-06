@@ -6,15 +6,15 @@ import javax.inject.Inject
 
 class MoviesServices @Inject constructor(var movieRepo:MovieRestRespository) {
 
-    suspend fun getAllMovies(page: Int = 1):List<MovieModel>{
+    suspend fun getPopularMovies(page: Int = 1):List<MovieModel>{
         return movieRepo.getAllMovies(page)
     }
 
-    suspend fun getTrendingMovies(page: Int):List<MovieModel>{
+    suspend fun getTrendingMovies(page: Int=1):List<MovieModel>{
         return movieRepo.getMoviesTrending(page)
     }
 
-    suspend fun getTopRatedMovies(page: Int):List<MovieModel>{
+    suspend fun getTopRatedMovies(page: Int=1):List<MovieModel>{
         return movieRepo.getAllMoviesTopRated(page)
     }
 

@@ -7,12 +7,12 @@ import retrofit2.http.Query
 
 interface MovieApi {
 
-    @GET("movie/popular?api_key=213e4816a874caa847bacd93220509ce&language=es-ES")
+    @GET("movie/popular?api_key=8d86bd8bbcc1c831d29fdc47be9b97ad&language=es-ES")
     suspend fun getAllMovies(@Query("page")page:Int): Response<ResultMovieModel>
 
-    @GET("movie/top_rated?api_key=213e4816a874caa847bacd93220509ce&language=es-ES")
+    @GET("movie/top_rated?api_key=8d86bd8bbcc1c831d29fdc47be9b97ad&language=es-ES")
     suspend fun getAllMoviesTopRated(@Query("page")page: Int): Response<ResultMovieModel>
 
-    @GET("trending/all/week?api_key=213e4816a874caa847bacd93220509ce&language=es-ES")
+    @GET("trending/all/week?api_key=8d86bd8bbcc1c831d29fdc47be9b97ad&language=es-ES")
     suspend fun getMoviesTrending(@Query("page")page: Int): Response<ResultMovieModel>
 }
